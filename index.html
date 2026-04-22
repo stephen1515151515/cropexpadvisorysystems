@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Crop Advisory System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #6e8e6e 0%, #c7e6c7 100%);
+            color: #2c3e50;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            padding: 20px 0;
+            margin-bottom: 30px;
+        }
+        
+        header h1 {
+            font-size: 2.5rem;
+            color: #2c5c2c;
+            margin-bottom: 10px;
+        }
+        
+        header p {
+            font-size: 1.2rem;
+            color: #3e6e3e;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .card {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+            margin-bottom: 30px;
+            transition: transform 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .card h2 {
+            color: #2c5c2c;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .input-area {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        input, select, button {
+            padding: 12px 15px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+        
+        input {
+            flex: 1;
+        }
+        
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        button:hover {
+            background: #3e8e41;
+        }
+        
+        button:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+        }
+        
+        .upload-area {
+            border: 2px dashed #4CAF50;
+            border-radius: 10px;
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .upload-area:hover {
+            background: rgba(76, 175, 80, 0.1);
+        }
+        
+        .camera-container {
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        #camera-preview {
+            width: 100%;
+            max-width: 500px;
+            border-radius: 10px;
+            border: 2px solid #4CAF50;
+        }
+        
+        .camera-controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 15px;
+        }
+        
+        .result-area {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 10px;
+            border-left: 5px solid #4CAF50;
+        }
+        
+        .result-area h3 {
+            color: #2c5c2c;
+            margin-bottom: 15px;
+        }
+        
+        .disease-info {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .disease-card {
+            flex: 1;
+            min-width: 300px;
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .solution-card {
+            flex: 2;
+            min-width: 300px;
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .language-selector {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-top: 15px;
+        }
+        
+        .voice-btn {
+            background: #ff9800;
+        }
+        
+        .voice-btn:hover {
+            background: #e68900;
+        }
+        
+        .crop-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .crop-item {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        
+        .crop-item:hover {
+            transform: scale(1.05);
+        }
+        
+        .crop-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: #4CAF50;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            color: #3e6e3e;
+        }
+        
+        @media (max-width: 768px) {
+            .input-area {
+                flex-direction: column;
+            }
+            
+            .disease-info {
+                flex-direction: column;
+            }
+            
+            .camera-controls {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-seedling"></i> Smart Crop Advisory System</h1>
+            <p>AI-powered assistance for small and marginal farmers - Get expert advice for crop diseases and solutions</p>
+        </header>
+        
+        <div class="card">
+            <h2><i class="fas fa-keyboard"></i> Text Advisory</h2>
+            <p>Type keywords related to crop issues (e.g., "yellow leaves rice", "tomato fungus", "wheat rust")</p>
+            <div class="input-area">
+                <input type="text" id="query-input" placeholder="Enter your crop problem...">
+                <button id="ask-btn">
+                    <i class="fas fa-search"></i> Get Advice
+                </button>
+            </div>
+            
+            <div class="language-selector">
+                <span>Voice Language:</span>
+                <select id="language-select">
+                    <option value="en">English</option>
+                    <option value="hi">Hindi</option>
+                    <option value="ta">Tamil</option>
+                    <option value="te">Telugu</option>
+                    <option value="bn">Bengali</option>
+                </select>
+                <button class="voice-btn" id="voice-btn">
+                    <i class="fas fa-volume-up"></i> Speak Advice
+                </button>
+            </div>
+            
+            <div class="result-area" id="text-result">
+                <p>Your advisory will appear here...</p>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2><i class="fas fa-camera"></i> Image Disease Detection</h2>
+            <p>Use your camera to capture an image of a diseased leaf for AI analysis</p>
+            
+            <div class="camera-container">
+                <video id="camera-preview" autoplay playsinline></video>
+                <div class="camera-controls">
+                    <button id="start-camera">
+                        <i class="fas fa-camera"></i> Start Camera
+                    </button>
+                    <button id="capture-btn" disabled>
+                        <i class="fas fa-camera-retro"></i> Capture Image
+                    </button>
+                    <button id="upload-btn">
+                        <i class="fas fa-upload"></i> Upload Image
+                    </button>
+                </div>
+                <input type="file" id="file-input" accept="image/*" style="display: none;">
+            </div>
+            
+            <div class="result-area" id="image-result">
+                <p>Disease detection results will appear here...</p>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2><i class="fas fa-leaf"></i> Common Crop Diseases</h2>
+            <p>Click on a crop to see common diseases and preventive measures</p>
+            
+            <div class="crop-grid">
+                <div class="crop-item" data-crop="rice">
+                    <div class="crop-icon"><i class="fas fa-leaf"></i></div>
+                    <h3>Rice</h3>
+                </div>
+                <div class="crop-item" data-crop="wheat">
+                    <div class="crop-icon"><i class="fas fa-wheat-alt"></i></div>
+                    <h3>Wheat</h3>
+                </div>
+                <div class="crop-item" data-crop="tomato">
+                    <div class="crop-icon"><i class="fas fa-apple-alt"></i></div>
+                    <h3>Tomato</h3>
+                </div>
+                <div class="crop-item" data-crop="potato">
+                    <div class="crop-icon"><i class="fas fa-potato"></i></div>
+                    <h3>Potato</h3>
+                </div>
+                <div class="crop-item" data-crop="corn">
+                    <div class="crop-icon"><i class="fas fa-corn"></i></div>
+                    <h3>Corn</h3>
+                </div>
+                <div class="crop-item" data-crop="cotton">
+                    <div class="crop-icon"><i class="fas fa-tshirt"></i></div>
+                    <h3>Cotton</h3>
+                </div>
+            </div>
+            
+            <div class="result-area" id="crop-result">
+                <p>Select a crop to view disease information...</p>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Smart Crop Advisory System for Small and Marginal Farmers</p>
+            <p>Hackathon Project | © 2023</p>
+        </footer>
+    </div>
+
+    <script>
+        // Enhanced disease database with more keywords
+        const diseaseDB = {
+            // Rice diseases
+            "rice blast": {
+                name: {
+                    "en": "Rice Blast",
+                    "hi": "धान का झुलसा रोग",
+                    "ta": "நெல் பிளாஸ்ட் நோய்",
+                    "te": "రైస్ బ్లాస్ట్",
+                    "bn": "ধান ব্লাস্ট রোগ"
+                },
+                description: {
+                    "en": "A fungal disease that affects all above ground parts of the rice plant.",
+                    "hi": "एक फंगल रोग जो चावल के पौधे के जमीन के ऊपर के सभी भागों को प्रभावित करता है।",
+                    "ta": "நெல் செடியின் மேற்பரப்பில் உள்ள அனைத்து பகுதிகளையும் பாதிக்கும் ஒரு பூஞ்சை நோய்.",
+                    "te": "వరి మొక్క యొక్క నేల పైన ఉన్న అన్ని భాగాలను ప్రభావితం చేసే ఫంగల్ రోగం.",
+                    "bn": "এটি একটি ছত্রাক রোগ যা ধান গাছের মাটির উপরের সব অংশকে প্রভাবিত করে।"
+                },
+                symptoms: {
+                    "en": "Diamond-shaped lesions with gray centers and brown borders on leaves, nodes, and panicles.",
+                    "hi": "पत्तियों, गांठों और पैनिकल्स पर भूरे रंग की सीमाओं वाले भूरे रंग के केंद्रों के साथ हीरे के आकार के घाव।",
+                    "ta": "இலைகள், முனைகள் மற்றும் பanicicles மீது சாம்பல் நிற மையங்கள் மற்றும் பழுப்பு எல்லைகள் கொண்ட வைர வடிவ புண்கள்.",
+                    "te": "ఆకులు, నోడ్స్ మరియు పానికల్స్ మీద బూడిద రంగు కేంద్రాలు మరియు బ్రౌన్ బordersర్లతో డైమండ్- ఆకారపు గాయాలు.",
+                    "bn": "পাতা, নোড এবং প্যানিকলে ধূসর কেন্দ্র এবং বাদামী সীমানা সহ ডায়মন্ড-আকৃতির ক্ষত।"
+                },
+                solution: {
+                    "en": "Use resistant varieties, apply silicon fertilizers, avoid excessive nitrogen, and apply fungicides like tricyclazole or azoxystrobin.",
+                    "hi": "प्रतिरोधी किस्मों का उपयोग करें, सिलिकॉन उर्वरक लगाएं, अत्यधिक नाइट्रोजन से बचें, और ट्राइसाइक्लाजोल या एज़ोक्सिस्ट्रोबिन जैसे कवकनाशी लगाएं।",
+                    "ta": "எதிர்ப்பு வகைகளைப் பயன்படுத்துங்கள், சிலிக்கான் உரங்களைப் பயன்படுத்துங்கள், அதிக நைட்ரஜனைத் தவிர்க்கவும், ட்ரைக்ளோசோல் அல்லது அசோக்ஸிஸ்ட்ரோபின் போன்ற பூஞ்சைக்கொல்லிகளைப் பயன்படுத்துங்கள்.",
+                    "te": "నిరోధక వైవిధ్యాలను ఉపయోగించండి, సిలికాన్ ఎరువులను వర్తించండి, అధిక నత్రజనిని నివారించండి మరియు ట్రైసైక్లాజోల్ లేదా అజోక్సిస్ట్రోబిన్ వంటి ఫంగిసైడ్లను వర్తించండి.",
+                    "bn": "প্রতিরোধী জাত ব্যবহার করুন, সিলিকন সার প্রয়োগ করুন, অত্যধিক নাইট্রোজেন এড়িয়ে চলুন এবং ট্রাইসাইক্লাজোল বা আজোক্সিস্ট্রোবিনের মতো ফাঙ্গিসাইড প্রয়োগ করুন।"
+                },
+                keywords: ["rice blast", "rice fungus", "yellow rice", "rice disease", "rice leaf spots"]
+            },
+            "brown spot rice": {
+                name: {
+                    "en": "Brown Spot",
+                    "hi": "ब्राउन स्पॉट",
+                    "ta": "பழுப்பு புள்ளி",
+                    "te": "బ్రౌన్ స్పాట్",
+                    "bn": "বাদামী দাগ"
+                },
+                description: {
+                    "en": "Fungal disease that causes yield reduction and poor grain quality.",
+                    "hi": "फंगल रोग जिसके कारण उपज में कमी और अनाज की खराब गुणवत्ता होती है।",
+                    "ta": "விளைச்சல் குறைவதற்கும் தானியத்தின் தரம் குறைவதற்கும் காரணமான பூஞ்சை நோய்.",
+                    "te": "ఫంగల్ రోగం దాతలో తగ్గుదల మరియు పేద దాని నాణ్యతకు కారణమవుతుంది.",
+                    "bn": "ছত্রাক রোগ যা ফলন হ্রাস এবং দানার খারাপ মানের কারণ হয়।"
+                },
+                symptoms: {
+                    "en": "Small, circular to oval brown spots on leaves and grains.",
+                    "hi": "पत्तियों और दानों पर छोटे, गोल से अंडाकार भूरे रंग के धब्बे।",
+                    "ta": "இலைகள் மற்றும் தானியங்களில் சிறிய, வட்டமான முதல் Oval பழுப்பு புள்ளிகள்.",
+                    "te": "ఆకులు మరియు ధాన్యంపై చిన్న, వృత్తాకార నుండి Oval బ్రౌन్ మచ్చలు.",
+                    "bn": "পাতা এবং দানায় ছোট, গোল থেকে Oval বাদামী দাগ।"
+                },
+                solution: {
+                    "en": "Use disease-free seeds, treat seeds with hot water, apply balanced fertilizers, and use fungicides like mancozeb or carbendazim.",
+                    "hi": "रोगमुक्त बीजों का उपयोग करें, बीजों को गर्म पानी से उपचारित करें, संतुलित उर्वरक लगाएं, और मैंकोज़ेब या कार्बेन्डाज़िम जैसे कवकनाशी का उपयोग करें।",
+                    "ta": "நோயற்ற விதைகளைப் பயன்படுத்துங்கள், விதைகளை சூடான நீரில் சிகிச்சை செய்யுங்கள், சமச்சீர் உரங்களைப் பயன்படுத்துங்கள், மேன்கோசெப் அல்லது கார்பெண்டாசிம் போன்ற பூஞ்சைக்கொல்லிகளைப் பயன்படுத்துங்கள்.",
+                    "te": "రోగం-ఉచిత విత్తనాలను ఉపయోగించండి, విత్తనాలను వేడి నీటితో చికిత్స చేయండి, సమతుల్య ఎरువులను వర్తించండి మరియు మ్యాంకోజెబ్ లేదా కార్బెండాజిమ్ వంటి ఫంగిసైడ్లను ఉపయోగించండి.",
+                    "bn": "রোগমুক্ত বীজ ব্যবহার করুন, গরম জল দিয়ে বীজ চিকিত্সা করুন, সুষম সার প্রয়োগ করুন এবং ম্যানকোজেব বা কার্বেনডাজিমের মতো ফাঙ্গিসাইড ব্যবহার করুন।"
+                },
+                keywords: ["brown spot", "brown spot rice", "rice spots", "rice brown", "rice leaf disease"]
+            },
+            // Tomato diseases
+            "early blight tomato": {
+                name: {
+                    "en": "Early Blight",
+                    "hi": "अर्ली ब्लाइट",
+                    "ta": "ஆர்லி பிளைட்",
+                    "te": "ఎర్లీ బ్లైట్",
+                    "bn": "আর্লি ব্লাইট"
+                },
+                description: {
+                    "en": "A common fungal disease that affects tomatoes, especially in humid conditions.",
+                    "hi": "एक सामान्य फंगल रोग जो टमाटर को प्रभावित करता है, विशेष रूप से आर्द्र परिस्थितियों में।",
+                    "ta": "தக்காளியைப் பாதிக்கும் ஒரு பொதுவான பூஞ்சை நோய், குறிப்பாக ஈரப்பதமான நிலைமைகளில்.",
+                    "te": "టమాటాలను ప్రభావితం చేసే సాధారణ ఫంగల్ రోగం, ముఖ్యంగా ఆర్ద్ర పరిస్థితుల్లో.",
+                    "bn": "এটি একটি সাধারণ ছত্রাক রোগ যা টমেটোকে প্রভাবিত করে, বিশেষ করে আর্দ্র অবস্থায়।"
+                },
+                symptoms: {
+                    "en": "Dark brown spots with concentric rings on lower leaves, yellowing around spots.",
+                    "hi": "निचली पत्तियों पर गहरे भूरे रंग के धब्बे जिनमें संकेंद्रित वलय होते हैं, धब्बों के आसपास पीला पड़ना।",
+                    "ta": "கீழ் இலைகளில் க concentrentric ித்துவ வளையங்கள் கொண்ட கரும்பழுப்பு புள்ளிகள், புள்ளிகளைச் சுற்றி மஞ்சள் நிறம்.",
+                    "te": "దిగువ ఆకులపై గాఢం బ్రౌన్ మచ్చలు క on సెంట్రిక్ రింగ్స్, మచ్చల చుట్టూ పసుపు రంగు.",
+                    "bn": "নিচের পাতায় গাঢ় বাদামী দাগ সহ Concentric রিং, দাগের চারপারে হলুদ হয়ে যাওয়া।"
+                },
+                solution: {
+                    "en": "Rotate crops, remove infected plants, improve air circulation, use mulch, and apply copper-based fungicides or chlorothalonil.",
+                    "hi": "फसल चक्र अपनाएं, संक्रमित पौधों को हटा दें, वायु संचार में सुधार करें, मल्च का उपयोग करें, और तांबे-आधारित कवकनाशी या क्लोरोथालोनिल लगाएं।",
+                    "ta": "பயிர்களை சுழற்றுங்கள், பாதிக்கப்பட்ட தாவரங்களை அகற்றுங்கள், காற்று பருவலை மேம்படுத்துங்கள், மல்ச் பயன்படுத்துங்கள், மற்றும் தாமிரம்-அடிப்படையிலான பூஞ்சைக்கொல்லிகள் அல்லது குளோரோதலோனிலைப் பயன்படுத்துங்கள்.",
+                    "te": "పంటలను తిప్పండి, సోకిన మొక్కలను తీసివేయండి, గాలి ప్రసరణను మెరుగుపరచండి, మల్చ్ ఉపయోగించండి మరియు రాగి-ఆధారిత ఫంగిసైడ్లు లేదా క్లోరోథాలోనిల్ వర్తించండి.",
+                    "bn": "ফসল ঘূর্ণন করুন, আক্রান্ত গাছপালা সরান, বায়ু সংবহন উন্নত করুন, মাল্চ ব্যবহার করুন এবং তামা-ভিত্তিক ফাঙ্গিসাইড বা ক্লোরোথালোনিল প্রয়োগ করুন।"
+                },
+                keywords: ["tomato blight", "early blight", "tomato spots", "tomato disease", "tomato leaf issues"]
+            }
+        };
+
+        // DOM elements
+        const queryInput = document.getElementById('query-input');
+        const askBtn = document.getElementById('ask-btn');
+        const textResult = document.getElementById('text-result');
+        const voiceBtn = document.getElementById('voice-btn');
+        const languageSelect = document.getElementById('language-select');
+        const imageResult = document.getElementById('image-result');
+        const cropItems = document.querySelectorAll('.crop-item');
+        const cropResult = document.getElementById('crop-result');
+        const startCameraBtn = document.getElementById('start-camera');
+        const captureBtn = document.getElementById('capture-btn');
+        const uploadBtn = document.getElementById('upload-btn');
+        const fileInput = document.getElementById('file-input');
+        const cameraPreview = document.getElementById('camera-preview');
+
+        let stream = null;
+        let currentAdvice = "";
+
+        // Function to find matching disease based on query
+        function findMatchingDisease(query) {
+            query = query.toLowerCase();
+            
+            // First try exact matches
+            if (diseaseDB[query]) {
+                return diseaseDB[query];
+            }
+            
+            // Then try keyword matching
+            for (const [key, data] of Object.entries(diseaseDB)) {
+                for (const keyword of data.keywords) {
+                    if (query.includes(keyword)) {
+                        return data;
+                    }
+                }
+            }
+            
+            // Then try partial matching
+            for (const [key, data] of Object.entries(diseaseDB)) {
+                if (query.includes(key)) {
+                    return data;
+                }
+                
+                // Check if any keyword is included in the query
+                if (data.keywords.some(keyword => query.includes(keyword))) {
+                    return data;
+                }
+            }
+            
+            return null;
+        }
+
+        // Function to display disease result
+        function displayDiseaseResult(data, lang = 'en') {
+            currentAdvice = `${data.name[lang]}. ${data.description[lang]} ${data.symptoms[lang]} ${data.solution[lang]}`;
+            
+            textResult.innerHTML = `
+                <h3>${data.name[lang]}</h3>
+                <p><strong>Description:</strong> ${data.description[lang]}</p>
+                <div class="disease-info">
+                    <div class="disease-card">
+                        <h4><i class="fas fa-info-circle"></i> Symptoms</h4>
+                        <p>${data.symptoms[lang]}</p>
+                    </div>
+                    <div class="solution-card">
+                        <h4><i class="fas fa-lightbulb"></i> Solution</h4>
+                        <p>${data.solution[lang]}</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Function to speak text
+        function speakText(text, lang = 'en') {
+            // Check if browser supports speech synthesis
+            if ('speechSynthesis' in window) {
+                const speech = new SpeechSynthesisUtterance();
+                speech.text = text;
+                speech.lang = lang;
+                speech.volume = 1;
+                speech.rate = 1;
+                speech.pitch = 1;
+                
+                window.speechSynthesis.speak(speech);
+            } else {
+                alert("Your browser doesn't support speech synthesis. Please try a modern browser like Chrome or Edge.");
+            }
+        }
+
+        // Ask button click handler
+        askBtn.addEventListener('click', function() {
+            const query = queryInput.value.trim();
+            if (query === '') {
+                textResult.innerHTML = '<p class="error">Please enter a crop problem or question.</p>';
+                return;
+            }
+            
+            const diseaseData = findMatchingDisease(query);
+            const lang = languageSelect.value;
+            
+            if (diseaseData) {
+                displayDiseaseResult(diseaseData, lang);
+            } else {
+                currentAdvice = `For "${query}", here's our general advice: Maintain proper soil health with organic matter, ensure adequate irrigation and drainage, rotate crops to prevent disease buildup, use resistant varieties when available, and monitor plants regularly for early signs of disease.`;
+                
+                textResult.innerHTML = `
+                    <h3>General Advice</h3>
+                    <p>For "${query}", here's our general advice:</p>
+                    <div class="disease-info">
+                        <div class="disease-card">
+                            <h4><i class="fas fa-lightbulb"></i> Recommendations</h4>
+                            <p>1. Maintain proper soil health with organic matter</p>
+                            <p>2. Ensure adequate irrigation and drainage</p>
+                            <p>3. Rotate crops to prevent disease buildup</p>
+                            <p>4. Use resistant varieties when available</p>
+                            <p>5. Monitor plants regularly for early signs of disease</p>
+                        </div>
+                        <div class="solution-card">
+                            <h4><i class="fas fa-shield-alt"></i> Preventive Measures</h4>
+                            <p>• Practice field sanitation by removing crop residues</p>
+                            <p>• Use disease-free seeds and planting materials</p>
+                            <p>• Apply balanced fertilizers - avoid excessive nitrogen</p>
+                            <p>• Consider biological control agents when possible</p>
+                            <p>• Consult local agricultural experts for specific recommendations</p>
+                        </div>
+                    </div>
+                `;
+            }
+        });
+
+        // Voice button click handler
+        voiceBtn.addEventListener('click', function() {
+            if (!currentAdvice) {
+                alert("Please get advice first before using the voice feature.");
+                return;
+            }
+            
+            const lang = languageSelect.value;
+            speakText(currentAdvice, lang);
+        });
+
+        // Start camera button click handler
+        startCameraBtn.addEventListener('click', async function() {
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                cameraPreview.srcObject = stream;
+                captureBtn.disabled = false;
+                startCameraBtn.disabled = true;
+            } catch (err) {
+                console.error("Error accessing camera:", err);
+                alert("Unable to access camera. Please check permissions and try again.");
+            }
+        });
+
+        // Capture button click handler
+        captureBtn.addEventListener('click', function() {
+            const canvas = document.createElement('canvas');
+            canvas.width = cameraPreview.videoWidth;
+            canvas.height = cameraPreview.videoHeight;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(cameraPreview, 0, 0, canvas.width, canvas.height);
+            
+            // Convert to data URL and display
+            const imageDataURL = canvas.toDataURL('image/png');
+            
+            // Simulate AI processing
+            imageResult.innerHTML = `<p><i class="fas fa-spinner fa-spin"></i> Analyzing image... Please wait</p>`;
+            
+            setTimeout(() => {
+                // For demo purposes, return a random disease
+                const diseases = Object.keys(diseaseDB);
+                const randomDisease = diseases[Math.floor(Math.random() * diseases.length)];
+                const diseaseData = diseaseDB[randomDisease];
+                const lang = languageSelect.value;
+                
+                imageResult.innerHTML = `
+                    <h3><i class="fas fa-check-circle" style="color: green;"></i> Analysis Complete</h3>
+                    <p>Detected: <strong>${diseaseData.name[lang]}</strong> with 85% confidence</p>
+                    <div class="disease-info">
+                        <div class="disease-card">
+                            <h4><i class="fas fa-info-circle"></i> Symptoms</h4>
+                            <p>${diseaseData.symptoms[lang]}</p>
+                        </div>
+                        <div class="solution-card">
+                            <h4><i class="fas fa-lightbulb"></i> Solution</h4>
+                            <p>${diseaseData.solution[lang]}</p>
+                        </div>
+                    </div>
+                    <div style="margin-top: 15px;">
+                        <button class="voice-btn" onclick="speakText('${diseaseData.name[lang]}. ${diseaseData.description[lang]} ${diseaseData.solution[lang]}', '${lang}')">
+                            <i class="fas fa-volume-up"></i> Speak This Advice
+                        </button>
+                    </div>
+                `;
+            }, 2000);
+        });
+
+        // Upload button click handler
+        uploadBtn.addEventListener('click', function() {
+            fileInput.click();
+        });
+
+        // File input change handler
+        fileInput.addEventListener('change', function(e) {
+            if (this.files && this.files[0]) {
+                const fileName = this.files[0].name;
+                
+                // Simulate AI processing
+                imageResult.innerHTML = `<p><i class="fas fa-spinner fa-spin"></i> Analyzing image... Please wait</p>`;
+                
+                setTimeout(() => {
+                    // For demo purposes, return a random disease
+                    const diseases = Object.keys(diseaseDB);
+                    const randomDisease = diseases[Math.floor(Math.random() * diseases.length)];
+                    const diseaseData = diseaseDB[randomDisease];
+                    const lang = languageSelect.value;
+                    
+                    imageResult.innerHTML = `
+                        <h3><i class="fas fa-check-circle" style="color: green;"></i> Analysis Complete</h3>
+                        <p>Detected: <strong>${diseaseData.name[lang]}</strong> with 92% confidence</p>
+                        <div class="disease-info">
+                            <div class="disease-card">
+                                <h4><i class="fas fa-info-circle"></i> Symptoms</h4>
+                                <p>${diseaseData.symptoms[lang]}</p>
+                            </div>
+                            <div class="solution-card">
+                                <h4><i class="fas fa-lightbulb"></i> Solution</h4>
+                                <p>${diseaseData.solution[lang]}</p>
+                            </div>
+                        </div>
+                        <div style="margin-top: 15px;">
+                            <button class="voice-btn" onclick="speakText('${diseaseData.name[lang]}. ${diseaseData.description[lang]} ${diseaseData.solution[lang]}', '${lang}')">
+                                <i class="fas fa-volume-up"></i> Speak This Advice
+                            </button>
+                        </div>
+                    `;
+                }, 2000);
+            }
+        });
+
+        // Crop item click handler
+        cropItems.forEach(item => {
+            item.addEventListener('click', function() {
+                const crop = this.getAttribute('data-crop');
+                const lang = languageSelect.value;
+                
+                // For demo purposes, show information based on crop
+                let diseaseData;
+                
+                if (crop === 'rice') {
+                    diseaseData = diseaseDB['rice blast'];
+                } else if (crop === 'tomato') {
+                    diseaseData = diseaseDB['early blight tomato'];
+                } else {
+                    diseaseData = diseaseDB['brown spot rice'];
+                }
+                
+                cropResult.innerHTML = `
+                    <h3>Common ${crop} Diseases</h3>
+                    <div class="disease-info">
+                        <div class="disease-card">
+                            <h4>${diseaseData.name[lang]}</h4>
+                            <p><strong>Description:</strong> ${diseaseData.description[lang]}</p>
+                            <p><strong>Symptoms:</strong> ${diseaseData.symptoms[lang]}</p>
+                        </div>
+                        <div class="solution-card">
+                            <h4>Solution</h4>
+                            <p>${diseaseData.solution[lang]}</p>
+                            <button class="voice-btn" onclick="speakText('${diseaseData.name[lang]}. ${diseaseData.description[lang]} ${diseaseData.solution[lang]}', '${lang}')" style="margin-top: 10px;">
+                                <i class="fas fa-volume-up"></i> Hear This Advice
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+        });
+
+        // Stop camera when leaving the page
+        window.addEventListener('beforeunload', function() {
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+            }
+        });
+    </script>
+</body>
+</html>
